@@ -7,11 +7,13 @@ import com.juan.ordermanagement.exception.ResourceNotFoundException;
 import com.juan.ordermanagement.mapper.ProductMapper;
 import com.juan.ordermanagement.repository.ProductRepository;
 import com.juan.ordermanagement.service.ProductService;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class DefaultProductService implements ProductService {
 
     private ProductRepository productRepository;

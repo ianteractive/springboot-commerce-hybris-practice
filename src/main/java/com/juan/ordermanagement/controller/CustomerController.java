@@ -14,7 +14,7 @@ public class CustomerController {
 
     private CustomerService customerService;
 
-    public void setCustomerService(CustomerService customerService){
+    public CustomerController(CustomerService customerService) {
         this.customerService = customerService;
     }
 

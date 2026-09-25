@@ -7,21 +7,20 @@ import com.juan.ordermanagement.exception.ResourceNotFoundException;
 import com.juan.ordermanagement.mapper.CustomerMapper;
 import com.juan.ordermanagement.repository.CustomerRepository;
 import com.juan.ordermanagement.service.CustomerService;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class DefaultCustomerService implements CustomerService {
 
     CustomerRepository customerRepository;
     CustomerMapper customerMapper;
 
-    public DefaultCustomerService(CustomerRepository customerRepository) {
+    public DefaultCustomerService(CustomerRepository customerRepository, CustomerMapper customerMapper) {
         this.customerRepository = customerRepository;
-    }
-
-    public DefaultCustomerService(CustomerMapper customerMapper) {
         this.customerMapper = customerMapper;
     }
 
