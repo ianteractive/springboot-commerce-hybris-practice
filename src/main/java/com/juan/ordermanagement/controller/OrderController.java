@@ -2,6 +2,7 @@ package com.juan.ordermanagement.controller;
 
 import com.juan.ordermanagement.dto.CreateOrderRequest;
 import com.juan.ordermanagement.dto.OrderResponse;
+import com.juan.ordermanagement.dto.UpdateOrderRequest;
 import com.juan.ordermanagement.service.OrderService;
 import org.hibernate.query.Order;
 import org.springframework.web.bind.annotation.*;
@@ -31,5 +32,16 @@ public class OrderController {
     @GetMapping
     public List<OrderResponse> getAllOrders() {
         return orderService.getAllOrders();
+    }
+
+    @PutMapping("/{orderNumber}")
+    public OrderResponse updateOrder(@PathVariable String orderNumber,
+                                     @RequestBody UpdateOrderRequest updateOrderRequest){
+        return orderService.updateOrder(orderNumber, updateOrderRequest);
+    }
+
+    @DeleteMapping("/{orderNumber}")
+    public void deleteOrder(@PathVariable String orderNumber){
+        orderService.deleteOrder(orderNumber);
     }
 }

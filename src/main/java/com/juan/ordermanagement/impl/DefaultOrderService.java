@@ -111,6 +111,36 @@ public class DefaultOrderService implements OrderService {
     public OrderResponse updateOrder(String orderNumber, UpdateOrderRequest updateOrderRequest) {
         CustomerOrder customerOrder = customerOrderRepository.findByOrderNumber(orderNumber)
                 .orElseThrow(()-> new ResourceNotFoundException("Order number doesn't exist: " + orderNumber));
+        orderItemRepository.deleteAll(customerOrder.getItems());
+        customerOrder.setItems(new ArrayList<>());
+        BigDecimal totalAmount = BigDecimal.ZERO;
+        List<OrderItem> orderItemList = new ArrayList<>();
+        for(CreateOrderItemRequest orderItemRequest : updateOrderRequest.getItems()){
+            Product product = productRepository.findByProductCode(orderItemRequest.getProductCode())
+                    .orElseThrow(()-> new ResourceNotFoundException("Product code doesn't exist: " + orderItemRequest.getProductCode()));
+            OrderItem orderItem = new OrderItem();
+            orderItem.setOrder(customerOrder);
+            orderItem.setProduct(product);
+            orderItem.setQuantity(orderItemRequest.getQuantity());
+            orderItem.setUnitPrice(product.getPrice());
 
+            BigDecimal subTotal = BigDecimal.valueOf(orderItem.getQuantity()).multiply(orderItem.getUnitPrice());
+            totalAmount = totalAmount.add(subTotal);
+            orderItemList.add(orderItem);
+        }
+        orderItemRepository.saveAll(orderItemList);
+        customerOrder.setItems(orderItemList);
+        customerOrder.setTotalAmount(totalAmount);
+        customerOrderRepository.save(customerOrder);
+        return orderMapper.toResponse(customerOrder);
+    }
+
+    @Override
+    @Transactional
+    public void deleteOrder(String orderNumber) {
+        CustomerOrder customerOrder = customerOrderRepository.findByOrderNumber(orderNumber)
+                .orElseThrow(()-> new ResourceNotFoundException("Order number doesn't exist: " + orderNumber));
+        orderItemRepository.deleteAll(customerOrder.getItems());
+        customerOrderRepository.delete(customerOrder);
     }
 }
