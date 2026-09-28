@@ -3,6 +3,7 @@ package com.juan.ordermanagement.impl;
 import com.juan.ordermanagement.dto.CreateOrderItemRequest;
 import com.juan.ordermanagement.dto.CreateOrderRequest;
 import com.juan.ordermanagement.dto.OrderResponse;
+import com.juan.ordermanagement.dto.UpdateOrderRequest;
 import com.juan.ordermanagement.entity.Customer;
 import com.juan.ordermanagement.entity.CustomerOrder;
 import com.juan.ordermanagement.entity.OrderItem;
@@ -87,4 +88,29 @@ public class DefaultOrderService implements OrderService {
             return  orderMapper.toResponse(customerOrder);
             //
         }
+
+    @Override
+    public OrderResponse getOrderByOrderNumber(String orderNumber) {
+        CustomerOrder customerOrder = customerOrderRepository.findByOrderNumber(orderNumber)
+                .orElseThrow(()-> new ResourceNotFoundException("Order number doesn't exist: " + orderNumber));
+        return orderMapper.toResponse(customerOrder);
+    }
+
+    @Override
+    public List<OrderResponse> getAllOrders() {
+        List<CustomerOrder> customerOrders = customerOrderRepository.findAll();
+        List<OrderResponse> orderResponses = new ArrayList<>();
+        for(CustomerOrder order : customerOrders){
+            orderResponses.add(orderMapper.toResponse(order));
+        }
+        return orderResponses;
+    }
+
+    @Override
+    @Transactional
+    public OrderResponse updateOrder(String orderNumber, UpdateOrderRequest updateOrderRequest) {
+        CustomerOrder customerOrder = customerOrderRepository.findByOrderNumber(orderNumber)
+                .orElseThrow(()-> new ResourceNotFoundException("Order number doesn't exist: " + orderNumber));
+
+    }
 }
