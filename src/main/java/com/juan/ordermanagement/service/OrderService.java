@@ -12,5 +12,5 @@ public interface OrderService {
     OrderResponse getOrderByOrderNumber(String orderNumber);
     List<OrderResponse> getAllOrders();
     OrderResponse updateOrder(String orderNumber, UpdateOrderRequest updateOrderRequest);
-
+    void deleteOrder(String orderNumber);
 }
