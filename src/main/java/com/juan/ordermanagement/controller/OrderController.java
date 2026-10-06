@@ -4,6 +4,7 @@ import com.juan.ordermanagement.dto.CreateOrderRequest;
 import com.juan.ordermanagement.dto.OrderResponse;
 import com.juan.ordermanagement.dto.UpdateOrderRequest;
 import com.juan.ordermanagement.service.OrderService;
+import jakarta.validation.Valid;
 import org.hibernate.query.Order;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,7 @@ public class OrderController {
     }
 
     @PostMapping
-    public OrderResponse createOrder(@RequestBody CreateOrderRequest createOrderRequest){
+    public OrderResponse createOrder(@Valid @RequestBody CreateOrderRequest createOrderRequest){
         return orderService.createOrder(createOrderRequest);
     }
 
@@ -36,7 +37,7 @@ public class OrderController {
 
     @PutMapping("/{orderNumber}")
     public OrderResponse updateOrder(@PathVariable String orderNumber,
-                                     @RequestBody UpdateOrderRequest updateOrderRequest){
+                                     @Valid @RequestBody UpdateOrderRequest updateOrderRequest){
         return orderService.updateOrder(orderNumber, updateOrderRequest);
     }
 

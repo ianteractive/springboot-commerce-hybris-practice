@@ -8,6 +8,8 @@ import com.juan.ordermanagement.mapper.ProductMapper;
 import com.juan.ordermanagement.repository.ProductRepository;
 import com.juan.ordermanagement.service.ProductService;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,13 +46,9 @@ public class DefaultProductService implements ProductService {
     }
 
     @Override
-    public List<ProductResponse> getAllProducts() {
-        List<Product> products = productRepository.findAll();
-        List<ProductResponse> productResponses = new ArrayList<>();
-        for(Product product : products){
-            productResponses.add(productMapper.toResponse(product));
-        }
-        return productResponses;
+    public Page<ProductResponse> getAllProducts(Pageable pageable){
+        Page<Product> products = productRepository.findAll(pageable);
+        return products.map(productMapper::toResponse);
     }
 
     @Override
@@ -75,5 +73,11 @@ public class DefaultProductService implements ProductService {
         Product product = productRepository.findByProductCode(productCode)
                 .orElseThrow(()-> new ResourceNotFoundException("Product code doesn't exist: " + productCode));
         productRepository.delete(product);
+    }
+
+    @Override
+    public Page<ProductResponse> searchProductsByName(String name, Pageable pageable){
+        Page<Product> products = productRepository.findByNameContainingIgnoreCase(name, pageable);
+        return products.map(productMapper::toResponse);
     }
 }
