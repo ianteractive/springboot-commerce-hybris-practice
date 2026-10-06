@@ -4,6 +4,8 @@ import com.juan.ordermanagement.dto.ProductRequest;
 import com.juan.ordermanagement.dto.ProductResponse;
 import com.juan.ordermanagement.entity.Product;
 import com.juan.ordermanagement.service.ProductService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,8 +33,8 @@ public class ProductController {
 
     //getAllProducts()	GET	/api/products
     @GetMapping
-    public List<ProductResponse> getAllProducts(){
-        return productService.getAllProducts();
+    public Page<ProductResponse> getAllProducts(Pageable pageable){
+        return productService.getAllProducts(pageable);
     }
 
     //updateProduct()	PUT	/api/products/{productCode}
@@ -46,5 +48,11 @@ public class ProductController {
     @DeleteMapping("/{productCode}")
     public void deleteProduct(@PathVariable String productCode){
         productService.deleteProduct(productCode);
+    }
+
+    //searchByProductsName() GET /api/products/search?name=phone&page=0&size=10&sort=price,asc
+    @GetMapping("/search")
+    public Page<ProductResponse> searchByProductsName(@RequestParam String name, Pageable pageable){
+        return productService.searchProductsByName(name, pageable);
     }
 }
