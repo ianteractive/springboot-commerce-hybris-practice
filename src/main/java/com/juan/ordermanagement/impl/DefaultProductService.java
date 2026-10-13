@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -80,4 +81,25 @@ public class DefaultProductService implements ProductService {
         Page<Product> products = productRepository.findByNameContainingIgnoreCase(name, pageable);
         return products.map(productMapper::toResponse);
     }
+
+    @Override
+    public Page<ProductResponse> searchProductByStock(Integer stock, Pageable pageable) {
+        Page<Product> products = productRepository.findByStockGreaterThanEqual(stock, pageable);
+        return products.map(productMapper::toResponse);
+    }
+
+    @Override
+    public Page<ProductResponse> searchProductByPrice(BigDecimal price, Pageable pageable) {
+        Page<Product> products = productRepository.findByPriceGreaterThanEqual(price, pageable);
+        return products.map(productMapper::toResponse);
+    }
+
+    @Override
+    public Page<ProductResponse> searchProductByStockAndPrice(Integer stock, BigDecimal price, Pageable pageable) {
+        // 1. Call the repository's combined-filter method
+        Page<Product> products = productRepository.findByStockGreaterThanEqualAndPriceLessThanEqual(stock, price, pageable);
+        // 2. Convert Page<Product> to Page<ProductResponse>
+        return products.map(productMapper::toResponse);
+    }
+
 }

@@ -6,13 +6,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
     Optional<Product> findByProductCode(String productCode);
-    List<Product> findByStockGreaterThan(Integer stock);
+    Page<Product> findByStockGreaterThanEqual(Integer stock, Pageable pageable);
     boolean existsByProductCode(String productCode);
     Page<Product> findByNameContainingIgnoreCase(String name, Pageable pageable);
+    Page<Product> findByPriceGreaterThanEqual(BigDecimal price, Pageable pageable);
+    Page<Product> findByStockGreaterThanEqualAndPriceLessThanEqual(Integer stock, BigDecimal price, Pageable pageable);
 }
