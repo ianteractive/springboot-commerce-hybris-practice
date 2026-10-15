@@ -30,7 +30,7 @@ public class DefaultProductService implements ProductService {
     @Override
     public ProductResponse createProduct(ProductRequest request) {
         if(productRepository.existsByProductCode(request.getProductCode())){
-            throw new ResourceNotFoundException("Product already exists: " + request.getProductCode());
+            throw new IllegalArgumentException("Product already exists: " + request.getProductCode());
         }
         Product product = productMapper.toEntity(request);
         Product savedProduct = productRepository.save(product);
